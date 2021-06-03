@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2021-06-03
  */
 @RestController
-@RequestMapping("/linkplus/accounts")
-public class AccountsController {
+@RequestMapping("/linkplus/account")
+public class AccountController {
 
 }
