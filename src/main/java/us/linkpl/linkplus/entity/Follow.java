@@ -2,7 +2,6 @@ package us.linkpl.linkplus.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,11 +23,9 @@ public class Follow implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @TableField("accountId")
-    private Integer accountid;
+    private Integer accountId;
 
-    @TableField("followId")
-    private Integer followid;
+    private Integer followId;
 
 
 }

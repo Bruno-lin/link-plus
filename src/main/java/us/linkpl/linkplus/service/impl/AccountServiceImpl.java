@@ -1,8 +1,8 @@
 package us.linkpl.linkplus.service.impl;
 
-import us.linkpl.linkplus.entity.Accounts;
-import us.linkpl.linkplus.mapper.AccountsMapper;
-import us.linkpl.linkplus.service.IAccountsService;
+import us.linkpl.linkplus.entity.Account;
+import us.linkpl.linkplus.mapper.AccountMapper;
+import us.linkpl.linkplus.service.IAccountService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-06-03
  */
 @Service
-public class AccountsServiceImpl extends ServiceImpl<AccountsMapper, Accounts> implements IAccountsService {
+public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> implements IAccountService {
 
 }

@@ -1,9 +1,7 @@
 package us.linkpl.linkplus.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,23 +16,24 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("accounts_socialMedia")
-public class AccountsSocialmedia implements Serializable {
+public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @TableField("accountId")
-    private Integer accountid;
+    private String username;
 
-    @TableField("socialMediaId")
-    private Integer socialmediaid;
+    private String secretKey;
 
-    private String content;
+    private String nickname;
 
-    private Boolean enable;
+    private Integer displayNumber;
+
+    private String background;
+
+    private String avatar;
 
 
 }

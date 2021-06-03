@@ -1,6 +1,6 @@
 package us.linkpl.linkplus.mapper;
 
-import us.linkpl.linkplus.entity.AccountsSocialmedia;
+import us.linkpl.linkplus.entity.Account;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author samsara
  * @since 2021-06-03
  */
-public interface AccountsSocialmediaMapper extends BaseMapper<AccountsSocialmedia> {
+public interface AccountMapper extends BaseMapper<Account> {
 
 }

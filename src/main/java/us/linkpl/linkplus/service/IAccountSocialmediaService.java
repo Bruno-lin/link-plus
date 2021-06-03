@@ -1,6 +1,6 @@
 package us.linkpl.linkplus.service;
 
-import us.linkpl.linkplus.entity.AccountsSocialmedia;
+import us.linkpl.linkplus.entity.AccountSocialmedia;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author samsara
  * @since 2021-06-03
  */
-public interface IAccountsSocialmediaService extends IService<AccountsSocialmedia> {
+public interface IAccountSocialmediaService extends IService<AccountSocialmedia> {
 
 }

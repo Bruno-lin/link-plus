@@ -1,6 +1,6 @@
 package us.linkpl.linkplus.service;
 
-import us.linkpl.linkplus.entity.Accounts;
+import us.linkpl.linkplus.entity.Account;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author samsara
  * @since 2021-06-03
  */
-public interface IAccountsService extends IService<Accounts> {
+public interface IAccountService extends IService<Account> {
 
 }
