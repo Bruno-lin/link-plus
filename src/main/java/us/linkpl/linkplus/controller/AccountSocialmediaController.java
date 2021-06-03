@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2021-06-03
  */
 @RestController
-@RequestMapping("/linkplus/account-socialmedia")
+@RequestMapping("/api/account-socialmedia")
 public class AccountSocialmediaController {
 
 }

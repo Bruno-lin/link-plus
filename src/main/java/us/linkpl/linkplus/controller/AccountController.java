@@ -17,7 +17,7 @@ import us.linkpl.linkplus.mapper.AccountMapper;
  * @since 2021-06-03
  */
 @RestController
-@RequestMapping("/linkplus/account")
+@RequestMapping("/api/account")
 public class AccountController {
     @Autowired
     AccountMapper accountMapper;
