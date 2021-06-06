@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import us.linkpl.linkplus.entity.Account;
 import us.linkpl.linkplus.entity.Follow;
-import us.linkpl.linkplus.entity.response.FollowResponse;
+import us.linkpl.linkplus.entity.response.AccountResponse;
 import us.linkpl.linkplus.entity.response.SimpleAccount;
 import us.linkpl.linkplus.mapper.AccountMapper;
 import us.linkpl.linkplus.mapper.FollowMapper;
@@ -38,7 +38,8 @@ public class FollowController {
 
     /**
      * 关注
-     * @param id 关注的id
+     *
+     * @param id      关注的id
      * @param session
      * @return
      */
@@ -61,12 +62,13 @@ public class FollowController {
 
     /**
      * 分页获取关注列表
+     *
      * @param params
      * @param session
      * @return
      */
     @GetMapping("")
-    public ResponseEntity<FollowResponse> followList(@RequestParam Map<String, Object> params, HttpSession session) {
+    public ResponseEntity<AccountResponse> followList(@RequestParam Map<String, Object> params, HttpSession session) {
         if (params.get("pageSize") == null || params.get("pageNum") == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -80,11 +82,10 @@ public class FollowController {
         Page page = new Page<>(pageNum, pageSize);
         IPage<Follow> mapIPage = followMapper.selectPage(page, queryWrapper);
 
-
-        FollowResponse followResponse = new FollowResponse();
-        followResponse.setPageNum(pageNum);
-        followResponse.setPageNum(pageSize);
-        followResponse.setTotalPage(mapIPage.getTotal());
+        AccountResponse<SimpleAccount> accountResponse = new AccountResponse<>();
+        accountResponse.setPageNum(pageNum);
+        accountResponse.setPageNum(pageSize);
+        accountResponse.setTotalPage(mapIPage.getTotal());
 
         List<Follow> followList = mapIPage.getRecords();
         for (Follow follow : followList) {
@@ -93,9 +94,9 @@ public class FollowController {
             simpleAccount.setId(account.getId());
             simpleAccount.setAvatar(account.getAvatar());
             simpleAccount.setNickname(account.getNickname());
-            followResponse.getFollows().add(simpleAccount);
+            accountResponse.getList().add(simpleAccount);
         }
 
-        return ResponseEntity.ok().body(followResponse);
+        return ResponseEntity.ok().body(accountResponse);
     }
 }

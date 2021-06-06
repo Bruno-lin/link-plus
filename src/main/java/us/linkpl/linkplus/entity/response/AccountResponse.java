@@ -1,18 +1,19 @@
 package us.linkpl.linkplus.entity.response;
 
 import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class FollowResponse {
+public class AccountResponse<T> {
 
     int pageSize;
     int pageNum;
     long totalPage;
-    List<SimpleAccount> follows;
+    List<T> list;
 
-    public FollowResponse() {
-        follows = new ArrayList<>();
+    public AccountResponse() {
+        list = new ArrayList<>();
     }
 }

@@ -4,21 +4,24 @@ package us.linkpl.linkplus.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import us.linkpl.linkplus.entity.Account;
+import us.linkpl.linkplus.entity.AccountSocialmedia;
 import us.linkpl.linkplus.entity.Follow;
-import us.linkpl.linkplus.entity.response.FollowResponse;
-import us.linkpl.linkplus.entity.response.SimpleAccount;
+import us.linkpl.linkplus.entity.SocialMedia;
+import us.linkpl.linkplus.entity.response.*;
 import us.linkpl.linkplus.mapper.AccountMapper;
+import us.linkpl.linkplus.mapper.SocialMediaMapper;
+import us.linkpl.linkplus.service.impl.AccountSocialmediaServiceImpl;
+import us.linkpl.linkplus.service.impl.FollowServiceImpl;
 
 import javax.servlet.http.HttpSession;
-import java.sql.Wrapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +39,9 @@ import java.util.Map;
 public class AccountController {
     @Autowired
     AccountMapper accountMapper;
-
+    FollowServiceImpl followService;
+    AccountSocialmediaServiceImpl accountSocialmediaService;
+    SocialMediaMapper socialMediaMapper;
 
     /**
      * 注册
@@ -110,12 +115,11 @@ public class AccountController {
     /**
      * 删除账户
      *
-     * @param session session
-     * @param id      要删除账户的id
+     * @param id 要删除账户的id
      * @return 状态码
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(HttpSession session, @PathVariable("id") Long id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         if (id == null) { //id为空
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -159,11 +163,54 @@ public class AccountController {
     }
 
     /**
+     * 查询用户信息
+     *
+     * @return
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountPage> getAccount(@PathVariable("id") Long id) {
+        Account account = accountMapper.selectById(id);
+
+        AccountInfo accountInfo = new AccountInfo();
+        BeanUtils.copyProperties(account, accountInfo);
+
+        QueryWrapper<Follow> queryWrapper = new QueryWrapper<Follow>();
+        queryWrapper.eq("followId", id);
+        int fans = followService.count(queryWrapper);
+        queryWrapper = new QueryWrapper<Follow>();
+        queryWrapper.eq("accountId", id);
+        int follows = followService.count(queryWrapper);
+        accountInfo.setFans(fans);
+        accountInfo.setFollows(follows);
+
+        List<Media> medias = new ArrayList<>();
+        QueryWrapper<AccountSocialmedia> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("accountId", id);
+        List<Object> list = accountSocialmediaService.listObjs(queryWrapper1);
+        for (Object o : list) {
+            AccountSocialmedia a = (AccountSocialmedia) o;
+            Media media = new Media();
+            media.setContent(a.getContent());
+            int socialMediaId = a.getSocialMediaId();
+            SocialMedia socialMedia = socialMediaMapper.selectById(socialMediaId);
+            media.setMediaName(socialMedia.getName());
+            media.setLogoUrl(socialMedia.getLogoUrl());
+            medias.add(media);
+        }
+
+        AccountPage accountPage = new AccountPage();
+        accountPage.setAccountInfo(accountInfo);
+        accountPage.setMedias(medias);
+        return ResponseEntity.ok(accountPage);
+    }
+
+    /**
      * 随机获取用户
+     *
      * @param num
      * @return
      */
-    @GetMapping("")
+    @GetMapping("/show")
     public ResponseEntity<List<SimpleAccount>> showAccounts(@RequestParam("num") String num) {
         if (num == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -182,19 +229,30 @@ public class AccountController {
 
     /**
      * 分页展示用户
+     *
      * @param params
-     * @param session
      * @return
      */
-    @GetMapping("")
-    public ResponseEntity<FollowResponse> showAllAccount(@RequestParam Map<String, Object> params, HttpSession session) {
+    @GetMapping("/all")
+    public ResponseEntity<AccountResponse> showAllAccount(@RequestParam Map<String, Object> params) {
         if (params.get("pageSize") == null || params.get("pageNum") == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         int pageSize = Integer.parseInt((String) params.get("pageSize"));
         int pageNum = Integer.parseInt((String) params.get("pageNum"));
-        int accountId = (int) session.getAttribute("accountId");
 
+        QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
+        Page page = new Page<>(pageNum, pageSize);
+        IPage<Account> mapIPage = accountMapper.selectPage(page, queryWrapper);
+        List<Account> followList = mapIPage.getRecords();
+
+        AccountResponse<Account> accountResponse = new AccountResponse<>();
+        accountResponse.setPageNum(pageNum);
+        accountResponse.setPageNum(pageSize);
+        accountResponse.setTotalPage(mapIPage.getTotal());
+        accountResponse.setList(followList);
+
+        return ResponseEntity.ok().body(accountResponse);
     }
 }
