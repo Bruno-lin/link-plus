@@ -10,7 +10,7 @@ public class FollowResponse {
     int pageSize;
     int pageNum;
     long totalPage;
-    List<SimpleFollow> follows;
+    List<SimpleAccount> follows;
 
     public FollowResponse() {
         follows = new ArrayList<>();

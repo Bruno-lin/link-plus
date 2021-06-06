@@ -1,7 +1,6 @@
 package us.linkpl.linkplus.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,12 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import us.linkpl.linkplus.entity.Account;
 import us.linkpl.linkplus.entity.Follow;
 import us.linkpl.linkplus.entity.response.FollowResponse;
-import us.linkpl.linkplus.entity.response.SimpleFollow;
+import us.linkpl.linkplus.entity.response.SimpleAccount;
 import us.linkpl.linkplus.mapper.AccountMapper;
 import us.linkpl.linkplus.mapper.FollowMapper;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +36,12 @@ public class FollowController {
     FollowMapper followMapper;
     AccountMapper accountMapper;
 
+    /**
+     * 关注
+     * @param id 关注的id
+     * @param session
+     * @return
+     */
     @PostMapping("/{id}")
     public ResponseEntity<String> followById(@PathVariable("id") int id, HttpSession session) {
 
@@ -55,6 +59,12 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 分页获取关注列表
+     * @param params
+     * @param session
+     * @return
+     */
     @GetMapping("")
     public ResponseEntity<FollowResponse> followList(@RequestParam Map<String, Object> params, HttpSession session) {
         if (params.get("pageSize") == null || params.get("pageNum") == null) {
@@ -79,11 +89,11 @@ public class FollowController {
         List<Follow> followList = mapIPage.getRecords();
         for (Follow follow : followList) {
             Account account = accountMapper.selectById(follow.getFollowId());
-            SimpleFollow simpleFollow = new SimpleFollow();
-            simpleFollow.setId(account.getId());
-            simpleFollow.setAvatar(account.getAvatar());
-            simpleFollow.setNickname(account.getNickname());
-            followResponse.getFollows().add(simpleFollow);
+            SimpleAccount simpleAccount = new SimpleAccount();
+            simpleAccount.setId(account.getId());
+            simpleAccount.setAvatar(account.getAvatar());
+            simpleAccount.setNickname(account.getNickname());
+            followResponse.getFollows().add(simpleAccount);
         }
 
         return ResponseEntity.ok().body(followResponse);
