@@ -17,6 +17,8 @@ import us.linkpl.linkplus.entity.Follow;
 import us.linkpl.linkplus.entity.SocialMedia;
 import us.linkpl.linkplus.entity.response.*;
 import us.linkpl.linkplus.mapper.AccountMapper;
+import us.linkpl.linkplus.mapper.AccountSocialmediaMapper;
+import us.linkpl.linkplus.mapper.FollowMapper;
 import us.linkpl.linkplus.mapper.SocialMediaMapper;
 import us.linkpl.linkplus.service.impl.AccountSocialmediaServiceImpl;
 import us.linkpl.linkplus.service.impl.FollowServiceImpl;
@@ -39,10 +41,21 @@ import java.util.Map;
 public class AccountController {
     @Autowired
     AccountMapper accountMapper;
+
+    @Autowired
     FollowServiceImpl followService;
+
+    @Autowired
     AccountSocialmediaServiceImpl accountSocialmediaService;
+
+    @Autowired
     SocialMediaMapper socialMediaMapper;
 
+    @Autowired
+    AccountSocialmediaMapper accountSocialmediaMapper;
+
+    @Autowired
+    FollowMapper followMapper;
     /**
      * 注册
      *
@@ -129,6 +142,15 @@ public class AccountController {
         }
         //session.removeAttribute("accountId");  //退出登录
         accountMapper.deleteById(id);  //删除账户
+
+        QueryWrapper<AccountSocialmedia> queryWrapper = new QueryWrapper<>(); //删除社交媒体中间表中的对应数据
+        queryWrapper.eq("accountId",id);
+        accountSocialmediaMapper.delete(queryWrapper);
+
+        QueryWrapper<Follow> queryWrapper1 = new QueryWrapper<>(); //删除关注列表和被关注列表
+        queryWrapper1.eq("accountId",id).or().eq("followId",id);
+        followMapper.delete(queryWrapper1);
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -186,9 +208,8 @@ public class AccountController {
         List<Media> medias = new ArrayList<>();
         QueryWrapper<AccountSocialmedia> queryWrapper1 = new QueryWrapper<>();
         queryWrapper1.eq("accountId", id);
-        List<Object> list = accountSocialmediaService.listObjs(queryWrapper1);
-        for (Object o : list) {
-            AccountSocialmedia a = (AccountSocialmedia) o;
+        List<AccountSocialmedia> accountSocialmedia = accountSocialmediaMapper.selectList(queryWrapper1);
+        for (AccountSocialmedia a : accountSocialmedia) {
             Media media = new Media();
             media.setContent(a.getContent());
             int socialMediaId = a.getSocialMediaId();
@@ -211,7 +232,7 @@ public class AccountController {
      * @return
      */
     @GetMapping("/show")
-    public ResponseEntity<List<SimpleAccount>> showAccounts(@RequestParam("num") String num) {
+    public ResponseEntity<List<SimpleAccount>> showAccounts(@RequestParam("num") Integer num) {
         if (num == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

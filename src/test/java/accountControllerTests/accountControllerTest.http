@@ -1,0 +1,61 @@
+###注册
+POST http://localhost:8080/api/account/register
+Content-Type: application/json
+
+{
+  "username": "9",
+  "password": "123123",
+  "nickname": "9"
+}
+###
+
+###登录
+POST http://localhost:8080/api/account/login
+Content-Type: application/json
+
+{
+  "username": "OlalalaO",
+  "password": "123123"
+}
+###
+
+
+###登出
+POST http://localhost:8080/api/account/logout
+Content-Type: application/json
+###
+
+
+
+###注销
+DELETE http://localhost:8080/api/account/3
+Content-Type: application/json
+###
+
+###查询是否有重复姓名
+GET http://localhost:8080/api/account/username?username=Olalala
+Accept: application/json
+###
+
+###查询是否有重复昵称
+GET http://localhost:8080/api/account/nickname?nickname=aasdas
+Accept: application/json
+
+###
+
+###查询个人信息
+GET http://localhost:8080/api/account/6
+Accept: application/json
+
+###
+
+###随机获取用户
+GET http://localhost:8080/api/account/show?num=4
+Accept: application/json
+
+###
+
+###获取所有用户
+GET http://localhost:8080/api/account/all?pageSize=4&pageNum=2
+Accept: application/json
+###

@@ -34,6 +34,8 @@ public class FollowController {
 
     @Autowired
     FollowMapper followMapper;
+
+    @Autowired
     AccountMapper accountMapper;
 
     /**
@@ -44,17 +46,17 @@ public class FollowController {
      * @return
      */
     @PostMapping("/{id}")
-    public ResponseEntity<String> followById(@PathVariable("id") int id, HttpSession session) {
+    public ResponseEntity<String> followById(@PathVariable("id") Long id, HttpSession session) {
 
         Account account = accountMapper.selectById(id);
         if (account == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        int accountId = (int) session.getAttribute("accountId");
+        Long accountId = (Long) session.getAttribute("accountId");
         Follow follow = new Follow();
-        follow.setAccountId(accountId);
-        follow.setAccountId(id);
+        follow.setAccountId(accountId.intValue());
+        follow.setFollowId(id.intValue());
         followMapper.insert(follow);
 
         return ResponseEntity.ok().build();
@@ -68,14 +70,14 @@ public class FollowController {
      * @return
      */
     @GetMapping("")
-    public ResponseEntity<AccountResponse> followList(@RequestParam Map<String, Object> params, HttpSession session) {
+    public ResponseEntity<AccountResponse> followList(@RequestParam Map<String, String> params, HttpSession session) {
         if (params.get("pageSize") == null || params.get("pageNum") == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        int pageSize = Integer.parseInt((String) params.get("pageSize"));
-        int pageNum = Integer.parseInt((String) params.get("pageNum"));
-        int accountId = (int) session.getAttribute("accountId");
+        int pageSize = Integer.parseInt(params.get("pageSize"));
+        int pageNum =  Integer.parseInt(params.get("pageNum"));
+        Long accountId = (Long) session.getAttribute("accountId");
 
         QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("accountId", accountId);
@@ -84,7 +86,7 @@ public class FollowController {
 
         AccountResponse<SimpleAccount> accountResponse = new AccountResponse<>();
         accountResponse.setPageNum(pageNum);
-        accountResponse.setPageNum(pageSize);
+        accountResponse.setPageSize(pageSize);
         accountResponse.setTotalPage(mapIPage.getTotal());
 
         List<Follow> followList = mapIPage.getRecords();
