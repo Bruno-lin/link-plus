@@ -212,10 +212,10 @@ public class AccountController {
         List<AccountSocialmedia> accountSocialmedia = accountSocialmediaMapper.selectList(queryWrapper1);
         for (AccountSocialmedia a : accountSocialmedia) {
             Media media = new Media();
-            media.setContent(a.getContent());
             int socialMediaId = a.getSocialMediaId();
             SocialMedia socialMedia = socialMediaMapper.selectById(socialMediaId);
-            media.setMediaId(socialMedia.getId());
+            media.setId(a.getId());
+            media.setContent(a.getContent());
             media.setMediaName(socialMedia.getName());
             media.setLogoUrl(socialMedia.getLogoUrl());
             medias.add(media);

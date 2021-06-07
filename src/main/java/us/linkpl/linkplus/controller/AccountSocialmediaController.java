@@ -2,17 +2,19 @@ package us.linkpl.linkplus.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import us.linkpl.linkplus.entity.AccountSocialmedia;
+import us.linkpl.linkplus.entity.response.Media;
 import us.linkpl.linkplus.mapper.AccountSocialmediaMapper;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author samsara
@@ -26,8 +28,33 @@ public class AccountSocialmediaController {
     AccountSocialmediaMapper accountSocialmediaMapper;
 
     @PostMapping("")
-    public ResponseEntity addAccountSocialMedia(){
-
+    public ResponseEntity<String> editAccountSocialMedia(HttpSession session, @RequestBody Media media) {
+        if (media == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        AccountSocialmedia a = new AccountSocialmedia();
+        Integer accountId = (Integer) session.getAttribute("userId");
+        AccountSocialmedia accountSocialmedia = accountSocialmediaMapper.selectById(media.getId());
+        if (accountSocialmedia.getAccountId() != accountId) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        a.setId(media.getId());
+        a.setContent(media.getContent());
+        accountSocialmediaMapper.updateById(a);
+        return ResponseEntity.ok("Edit Account Social Media Successfully");
     }
 
+    @PutMapping("")
+    public ResponseEntity<String> addAccountSocialMedia(HttpSession session, @RequestBody Media media) {
+        if (media == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        AccountSocialmedia a = new AccountSocialmedia();
+        Integer accountId = (Integer) session.getAttribute("userId");
+        a.setAccountId(accountId);
+        a.setSocialMediaId(Math.toIntExact(media.getMediaId()));
+        a.setContent(media.getContent());
+        accountSocialmediaMapper.insert(a);
+        return ResponseEntity.ok("Add Account Social Media Successfully");
+    }
 }
