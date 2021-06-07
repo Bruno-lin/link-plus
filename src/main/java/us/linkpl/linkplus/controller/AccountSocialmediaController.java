@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import us.linkpl.linkplus.entity.Account;
 import us.linkpl.linkplus.entity.AccountSocialmedia;
 import us.linkpl.linkplus.entity.response.Media;
+import us.linkpl.linkplus.mapper.AccountMapper;
 import us.linkpl.linkplus.mapper.AccountSocialmediaMapper;
 
 import javax.servlet.http.HttpSession;
@@ -27,8 +29,12 @@ public class AccountSocialmediaController {
     @Autowired
     AccountSocialmediaMapper accountSocialmediaMapper;
 
+    @Autowired
+    AccountMapper accountMapper;
+
     /**
      * 修改社交媒体
+     *
      * @param session
      * @param media
      * @return
@@ -52,6 +58,7 @@ public class AccountSocialmediaController {
 
     /**
      * 添加社交媒体
+     *
      * @param session
      * @param media
      * @return
@@ -67,6 +74,9 @@ public class AccountSocialmediaController {
         a.setSocialMediaId(Math.toIntExact(media.getMediaId()));
         a.setContent(media.getContent());
         accountSocialmediaMapper.insert(a);
+        Account account = accountMapper.selectById(accountId);
+        account.setDisplayNumber(account.getDisplayNumber() + 1);
+        accountMapper.updateById(account);
         return ResponseEntity.ok("Add Account Social Media Successfully");
     }
 }
