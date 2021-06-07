@@ -56,6 +56,7 @@ public class AccountController {
 
     @Autowired
     FollowMapper followMapper;
+
     /**
      * 注册
      *
@@ -144,11 +145,11 @@ public class AccountController {
         accountMapper.deleteById(id);  //删除账户
 
         QueryWrapper<AccountSocialmedia> queryWrapper = new QueryWrapper<>(); //删除社交媒体中间表中的对应数据
-        queryWrapper.eq("accountId",id);
+        queryWrapper.eq("accountId", id);
         accountSocialmediaMapper.delete(queryWrapper);
 
         QueryWrapper<Follow> queryWrapper1 = new QueryWrapper<>(); //删除关注列表和被关注列表
-        queryWrapper1.eq("accountId",id).or().eq("followId",id);
+        queryWrapper1.eq("accountId", id).or().eq("followId", id);
         followMapper.delete(queryWrapper1);
 
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -214,6 +215,7 @@ public class AccountController {
             media.setContent(a.getContent());
             int socialMediaId = a.getSocialMediaId();
             SocialMedia socialMedia = socialMediaMapper.selectById(socialMediaId);
+            media.setMediaId(socialMedia.getId());
             media.setMediaName(socialMedia.getName());
             media.setLogoUrl(socialMedia.getLogoUrl());
             medias.add(media);
