@@ -9,11 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import us.linkpl.linkplus.entity.Account;
 import us.linkpl.linkplus.entity.Follow;
 import us.linkpl.linkplus.entity.response.AccountResponse;
 import us.linkpl.linkplus.entity.response.SimpleAccount;
-import us.linkpl.linkplus.mapper.AccountMapper;
 import us.linkpl.linkplus.mapper.FollowMapper;
 
 import javax.servlet.http.HttpSession;

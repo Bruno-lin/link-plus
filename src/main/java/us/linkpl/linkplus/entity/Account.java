@@ -8,11 +8,11 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- *
+ * 
  * </p>
  *
  * @author samsara
- * @since 2021-06-03
+ * @since 2021-06-07
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -29,11 +29,13 @@ public class Account implements Serializable {
 
     private String nickname;
 
-    private Integer displayNumber;
+    private String slogan;
+
+    private String avatar;
 
     private String background;
 
-    private String avatar;
+    private Integer displayNumber;
 
 
 }
