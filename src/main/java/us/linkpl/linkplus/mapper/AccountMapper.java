@@ -1,9 +1,8 @@
 package us.linkpl.linkplus.mapper;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.ResponseBody;
 import us.linkpl.linkplus.entity.Account;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -15,7 +14,7 @@ import java.util.List;
  * </p>
  *
  * @author samsara
- * @since 2021-06-03
+ * @since 2021-06-07
  */
 @Repository
 public interface AccountMapper extends BaseMapper<Account> {
