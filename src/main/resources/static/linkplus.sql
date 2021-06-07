@@ -6,9 +6,10 @@ create table account
     username      varchar(32)   not null,
     secretKey     varchar(255)  not null,
     nickname      varchar(32)   not null,
-    displayNumber int default 0 null,
-    background    varchar(512)  null,
+    slogan        varchar(144)  null,
     avatar        varchar(512)  null,
+    background    varchar(512)  null,
+    displayNumber int default 0 null,
     constraint accounts_id_uindex
         unique (id),
     constraint accounts_nickname_uindex
@@ -59,5 +60,4 @@ create table social_media
 
 alter table social_media
     add primary key (id);
-
 
