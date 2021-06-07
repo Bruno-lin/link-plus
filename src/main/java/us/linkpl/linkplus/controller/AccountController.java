@@ -163,6 +163,11 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    /**
+     * 验证username是否重复
+     * @param username
+     * @return
+     */
     @GetMapping("/username")
     public ResponseEntity<String> repeatUsername(@RequestParam("username") String username) {
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
@@ -172,6 +177,11 @@ public class AccountController {
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
+    /**
+     * 验证nickname是否重复
+     * @param nickname
+     * @return
+     */
     @GetMapping("/nickname")
     public ResponseEntity<String> repeatNickname(@RequestParam("nickname") String nickname) {
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
@@ -287,8 +297,15 @@ public class AccountController {
         return ResponseEntity.ok().body(accountResponse);
     }
 
+    /**
+     * 上传用户头像
+     * @param file
+     * @param session
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/avatar")
-    public ResponseEntity getAvatar(MultipartFile file,HttpSession session) throws IOException {
+    public ResponseEntity postAvatar(MultipartFile file,HttpSession session) throws IOException {
         Long accountId = /*5l; */(Long)session.getAttribute("accountId");
        if (Objects.isNull(file) || file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -311,8 +328,15 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 上传用户背景图片
+     * @param file
+     * @param session
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/background")
-    public ResponseEntity getBackground(MultipartFile file,HttpSession session) throws IOException {
+    public ResponseEntity postBackground(MultipartFile file,HttpSession session) throws IOException {
         Long accountId = /*5l; */(Long)session.getAttribute("accountId");
         if (Objects.isNull(file) || file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
