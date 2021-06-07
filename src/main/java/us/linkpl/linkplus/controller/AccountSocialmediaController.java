@@ -27,6 +27,12 @@ public class AccountSocialmediaController {
     @Autowired
     AccountSocialmediaMapper accountSocialmediaMapper;
 
+    /**
+     * 修改社交媒体
+     * @param session
+     * @param media
+     * @return
+     */
     @PostMapping("")
     public ResponseEntity<String> editAccountSocialMedia(HttpSession session, @RequestBody Media media) {
         if (media == null) {
@@ -44,6 +50,12 @@ public class AccountSocialmediaController {
         return ResponseEntity.ok("Edit Account Social Media Successfully");
     }
 
+    /**
+     * 添加社交媒体
+     * @param session
+     * @param media
+     * @return
+     */
     @PutMapping("")
     public ResponseEntity<String> addAccountSocialMedia(HttpSession session, @RequestBody Media media) {
         if (media == null) {
