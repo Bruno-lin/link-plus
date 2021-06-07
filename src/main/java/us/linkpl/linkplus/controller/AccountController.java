@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.multipart.MultipartFile;
 import us.linkpl.linkplus.entity.Account;
 import us.linkpl.linkplus.entity.AccountSocialmedia;
 import us.linkpl.linkplus.entity.Follow;
@@ -24,9 +26,12 @@ import us.linkpl.linkplus.service.impl.AccountSocialmediaServiceImpl;
 import us.linkpl.linkplus.service.impl.FollowServiceImpl;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * <p>
@@ -38,6 +43,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/account")
+@CrossOrigin
 public class AccountController {
     @Autowired
     AccountMapper accountMapper;
@@ -57,6 +63,8 @@ public class AccountController {
     @Autowired
     FollowMapper followMapper;
 
+    @Value("${ACCOUNT}")
+    private String ACCOUNT;
     /**
      * 注册
      *
@@ -277,5 +285,53 @@ public class AccountController {
         accountResponse.setList(followList);
 
         return ResponseEntity.ok().body(accountResponse);
+    }
+
+    @PostMapping("/avatar")
+    public ResponseEntity getAvatar(MultipartFile file,HttpSession session) throws IOException {
+        Long accountId = /*5l; */(Long)session.getAttribute("accountId");
+       if (Objects.isNull(file) || file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        byte[] bytes = file.getBytes();
+        String originalFilename = file.getOriginalFilename();
+
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String pic = ACCOUNT + accountId +"_"+suffix;
+        String name = accountId +"_"+suffix;
+
+        Path path = Paths.get(pic);
+        if (!Files.isWritable(path)) {
+            Files.createDirectories(Paths.get(ACCOUNT));
+        }
+        Files.write(path,bytes);
+        Account account = accountMapper.selectById(accountId);
+        account.setAvatar("/accounts/avatar/"+name);
+        accountMapper.updateById(account);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/background")
+    public ResponseEntity getBackground(MultipartFile file,HttpSession session) throws IOException {
+        Long accountId = /*5l; */(Long)session.getAttribute("accountId");
+        if (Objects.isNull(file) || file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        byte[] bytes = file.getBytes();
+        String originalFilename = file.getOriginalFilename();
+
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String pic = ACCOUNT + accountId +"_"+suffix;
+        String name = accountId +"_"+suffix;
+
+        Path path = Paths.get(pic);
+        if (!Files.isWritable(path)) {
+            Files.createDirectories(Paths.get(ACCOUNT));
+        }
+        Files.write(path,bytes);
+        Account account = accountMapper.selectById(accountId);
+        account.setAvatar("/accounts/background/"+name);
+        accountMapper.updateById(account);
+        return ResponseEntity.ok().build();
     }
 }
