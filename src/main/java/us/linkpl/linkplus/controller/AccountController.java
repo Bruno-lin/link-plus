@@ -203,47 +203,6 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * 查询用户信息
-     *
-     * @return
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<AccountPage> getAccount(@PathVariable("id") Long id) {
-        Account account = accountMapper.selectById(id);
-
-        AccountInfo accountInfo = new AccountInfo();
-        BeanUtils.copyProperties(account, accountInfo);
-
-        QueryWrapper<Follow> queryWrapper = new QueryWrapper<Follow>();
-        queryWrapper.eq("followId", id);
-        int fans = followService.count(queryWrapper);
-        queryWrapper = new QueryWrapper<Follow>();
-        queryWrapper.eq("accountId", id);
-        int follows = followService.count(queryWrapper);
-        accountInfo.setFans(fans);
-        accountInfo.setFollows(follows);
-
-        List<Media> medias = new ArrayList<>();
-        QueryWrapper<AccountSocialmedia> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("accountId", id);
-        List<AccountSocialmedia> accountSocialmedia = accountSocialmediaMapper.selectList(queryWrapper1);
-        for (AccountSocialmedia a : accountSocialmedia) {
-            Media media = new Media();
-            int socialMediaId = a.getSocialMediaId();
-            SocialMedia socialMedia = socialMediaMapper.selectById(socialMediaId);
-            media.setId(a.getId());
-            media.setContent(a.getContent());
-            media.setMediaName(socialMedia.getName());
-            media.setLogoUrl(socialMedia.getLogoUrl());
-            medias.add(media);
-        }
-
-        AccountPage accountPage = new AccountPage();
-        accountPage.setAccountInfo(accountInfo);
-        accountPage.setMedias(medias);
-        return ResponseEntity.ok(accountPage);
-    }
 
     /**
      * 随机获取用户
