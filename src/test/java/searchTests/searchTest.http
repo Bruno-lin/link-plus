@@ -1,0 +1,21 @@
+###登录
+POST http://localhost:8080/api/account/login
+Content-Type: application/json
+
+{
+  "username": "OlalalaO",
+  "password": "123123"
+}
+###
+
+
+
+GET http://localhost:8080/api/search/id/6
+Accept: application/json
+
+###
+
+GET http://localhost:8080/api/search/name/1
+Accept: application/json
+
+###

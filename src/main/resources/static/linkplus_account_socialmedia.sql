@@ -1,0 +1,2 @@
+INSERT INTO linkplus.account_socialmedia (id, accountId, socialMediaId, content, enable) VALUES (1, 6, 1, 'zzhh', 1);
+INSERT INTO linkplus.account_socialmedia (id, accountId, socialMediaId, content, enable) VALUES (2, 6, 2, 'wwbb', 1);
