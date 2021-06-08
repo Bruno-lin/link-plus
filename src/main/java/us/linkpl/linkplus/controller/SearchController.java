@@ -87,10 +87,13 @@ public class SearchController {
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<AccountPage> getAccountByName(@PathVariable("name") String nickname) {
+    public ResponseEntity getAccountByName(@PathVariable("name") String nickname) {
         QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("nickname", nickname);
         List<Account> account = accountMapper.selectList(queryWrapper);
+        if (account == null) {
+            return ResponseEntity.ok("Account Not Found!");
+        }
         return getAccountById(account.get(0).getId());
     }
 }
