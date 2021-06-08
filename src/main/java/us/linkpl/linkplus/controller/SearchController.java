@@ -47,6 +47,10 @@ public class SearchController {
      */
     @GetMapping("/id/{id}")
     public ResponseEntity<AccountPage> getAccountById(@PathVariable("id") Long id) {
+        return getAccountPageById(id);
+    }
+
+    private ResponseEntity<AccountPage> getAccountPageById(Long id) {
         Account account = accountMapper.selectById(id);
 
         AccountInfo accountInfo = new AccountInfo();
@@ -82,10 +86,11 @@ public class SearchController {
         return ResponseEntity.ok(accountPage);
     }
 
-
     @GetMapping("/name/{name}")
     public ResponseEntity<AccountPage> getAccountByName(@PathVariable("name") String nickname) {
         QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("nickname", nickname + "%");
+        queryWrapper.eq("nickname", nickname);
+        List<Account> account = accountMapper.selectList(queryWrapper);
+        return getAccountById(account.get(0).getId());
     }
 }

@@ -20,7 +20,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/api/account/register")  //过滤掉注册页面
                 .excludePathPatterns("/api/account/username")
                 .excludePathPatterns("/api/account/nickname")
-                .excludePathPatterns("/api/account/search/")
+                .excludePathPatterns("/api/search/id")
+                .excludePathPatterns("/api/search/name")
                 .excludePathPatterns("/static/**");  //过滤掉静态资源
     }
 }
