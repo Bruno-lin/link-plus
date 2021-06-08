@@ -1,4 +1,4 @@
-create database linkplus;
+
 
 create table account
 (
