@@ -20,7 +20,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 //        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
 //        String id = operations.get("userId");
         HttpSession session = request.getSession();
-        Object id = session.getAttribute("userId");
+        Object id = session.getAttribute("accountId");
         if (id == null) {
 //            System.out.println("401:"+request.getServletPath());
 //            session.setAttribute("userId",0);
