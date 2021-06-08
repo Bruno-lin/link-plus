@@ -74,6 +74,10 @@ public class AccountController {
         String username = map.get("username");
         String password = map.get("password");
         String nickname = map.get("nickname");
+        String[] ava = {"-1.jpg","-2.png","-3.png","-4.jpg","-5.jpg"};
+        String[] background = {"-1.png","-2.jpg","-3.jpg"};
+        String AVATAR = "/accounts/avatar/";
+        String BACKGROUND = "/accounts/background/";
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
         queryWrapper.eq("username", username).or().eq("nickname", nickname);
         List<Account> accounts = accountMapper.selectList(queryWrapper);
@@ -81,10 +85,17 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         String encryption = DigestUtils.md5DigestAsHex(password.getBytes());
+        Random avaRandom = new Random();
+        Random bgRandom = new Random();
+        String avatar = AVATAR+ava[avaRandom.nextInt(4)];
+        String backg = BACKGROUND+background[bgRandom.nextInt(2)];
+
         Account account = new Account();
         account.setUsername(username);
         account.setSecretKey(encryption);
         account.setNickname(nickname);
+        account.setAvatar(avatar);
+        account.setBackground(backg);
         accountMapper.insert(account);
         return ResponseEntity.ok().build();
     }

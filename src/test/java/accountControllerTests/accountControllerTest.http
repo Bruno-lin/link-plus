@@ -3,9 +3,36 @@ POST http://localhost:8080/api/account/register
 Content-Type: application/json
 
 {
-  "username": "9",
+  "username": "ww",
   "password": "123123",
-  "nickname": "9"
+  "nickname": "ww"
+}
+###
+POST http://localhost:8080/api/account/register
+Content-Type: application/json
+
+{
+  "username": "aa",
+  "password": "123123",
+  "nickname": "aa"
+}
+###
+POST http://localhost:8080/api/account/register
+Content-Type: application/json
+
+{
+  "username": "bb",
+  "password": "123123",
+  "nickname": "bb"
+}
+###
+POST http://localhost:8080/api/account/register
+Content-Type: application/json
+
+{
+  "username": "cc",
+  "password": "123123",
+  "nickname": "cc"
 }
 ###
 
