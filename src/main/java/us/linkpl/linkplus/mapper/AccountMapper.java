@@ -1,7 +1,8 @@
 package us.linkpl.linkplus.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.data.repository.query.Param;
+
 import org.springframework.stereotype.Repository;
 import us.linkpl.linkplus.entity.Account;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

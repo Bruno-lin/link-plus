@@ -14,7 +14,7 @@ POST http://localhost:8080/api/account/login
 Content-Type: application/json
 
 {
-  "username": "OlalalaO",
+  "username": "1",
   "password": "123123"
 }
 ###
@@ -43,11 +43,7 @@ Accept: application/json
 
 ###
 
-###查询个人信息
-GET http://localhost:8080/api/account/6
-Accept: application/json
 
-###
 
 ###随机获取用户
 GET http://localhost:8080/api/account/show?num=4
