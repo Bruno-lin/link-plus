@@ -2,7 +2,7 @@ package us.linkpl.linkplus.interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.StringRedisTemplate;
+
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,8 +12,8 @@ import javax.servlet.http.HttpSession;
 @Configuration
 public class AuthInterceptor implements HandlerInterceptor {
 
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
+/*    @Autowired
+    StringRedisTemplate stringRedisTemplate;*/
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

@@ -110,9 +110,9 @@ public class AccountController {
         Account account = accounts.get(0);
         if (username.equals(account.getUsername()) && encryption.equals(account.getSecretKey())) {
             session.setAttribute("accountId", account.getId());
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("SUCCESS");
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
         }
     }
 
@@ -126,10 +126,10 @@ public class AccountController {
     public ResponseEntity<String> logout(HttpSession session) {
         Long accountId = (Long) session.getAttribute("accountId");
         if (accountId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
         }
         session.removeAttribute("accountId");
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("SUCCESS");
     }
 
     /**
@@ -141,11 +141,11 @@ public class AccountController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         if (id == null) { //id为空
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
         }
         Account account = accountMapper.selectById(id);
         if (account == null) { //要删除的账户不存在
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT_FOUND");
         }
         //session.removeAttribute("accountId");  //退出登录
         accountMapper.deleteById(id);  //删除账户
@@ -158,7 +158,7 @@ public class AccountController {
         queryWrapper1.eq("accountId", id).or().eq("followId", id);
         followMapper.delete(queryWrapper1);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body("SUCCESS");
     }
 
     /**
@@ -171,8 +171,8 @@ public class AccountController {
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
         queryWrapper.eq("username", username);
         List<Account> accounts = accountMapper.selectList(queryWrapper);
-        if (accounts.size() == 0) return ResponseEntity.ok().build();
-        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if (accounts.size() == 0) return ResponseEntity.ok("SUCCESS");
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
     }
 
     /**
@@ -185,8 +185,8 @@ public class AccountController {
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
         queryWrapper.eq("nickname", nickname);
         List<Account> accounts = accountMapper.selectList(queryWrapper);
-        if (accounts.size() == 0) return ResponseEntity.ok().build();
-        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        if (accounts.size() == 0) return ResponseEntity.ok("SUCCESS");
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
     }
 
     /**
@@ -198,7 +198,7 @@ public class AccountController {
     @PutMapping("/me")
     public ResponseEntity<String> editAccount(@RequestBody Account account) {
         accountMapper.updateById(account);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("SUCCESS");
     }
 
 
@@ -209,9 +209,9 @@ public class AccountController {
      * @return
      */
     @GetMapping("/show")
-    public ResponseEntity<List<SimpleAccount>> showAccounts(@RequestParam("num") Integer num) {
+    public ResponseEntity showAccounts(@RequestParam("num") Integer num) {
         if (num == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
         }
         List<Account> accounts = accountMapper.selectRandomAccount(num);
         List<SimpleAccount> response = new ArrayList<>();
@@ -232,9 +232,9 @@ public class AccountController {
      * @return
      */
     @GetMapping("/all")
-    public ResponseEntity<AccountResponse> showAllAccount(@RequestParam Map<String, Object> params) {
+    public ResponseEntity showAllAccount(@RequestParam Map<String, Object> params) {
         if (params.get("pageSize") == null || params.get("pageNum") == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
         }
 
         int pageSize = Integer.parseInt((String) params.get("pageSize"));
@@ -265,7 +265,7 @@ public class AccountController {
     public ResponseEntity postAvatar(MultipartFile file,HttpSession session) throws IOException {
         Long accountId = /*5l; */(Long)session.getAttribute("accountId");
        if (Objects.isNull(file) || file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
         }
         byte[] bytes = file.getBytes();
         String originalFilename = file.getOriginalFilename();
@@ -282,7 +282,7 @@ public class AccountController {
         Account account = accountMapper.selectById(accountId);
         account.setAvatar("/accounts/avatar/"+name);
         accountMapper.updateById(account);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("SUCCESS");
     }
 
     /**
@@ -296,7 +296,7 @@ public class AccountController {
     public ResponseEntity postBackground(MultipartFile file,HttpSession session) throws IOException {
         Long accountId = /*5l; */(Long)session.getAttribute("accountId");
         if (Objects.isNull(file) || file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
         }
         byte[] bytes = file.getBytes();
         String originalFilename = file.getOriginalFilename();
@@ -313,6 +313,6 @@ public class AccountController {
         Account account = accountMapper.selectById(accountId);
         account.setAvatar("/accounts/background/"+name);
         accountMapper.updateById(account);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("SUCCESS");
     }
 }
