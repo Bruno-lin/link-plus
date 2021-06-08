@@ -207,7 +207,9 @@ public class AccountController {
      * @return
      */
     @PutMapping("/me")
-    public ResponseEntity<String> editAccount(@RequestBody Account account) {
+    public ResponseEntity<String> editAccount(@RequestBody Account account,HttpSession session) {
+        Long accountId = (Long) session.getAttribute("accountId");
+        if (!accountId.equals(account.getId()))return ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
         accountMapper.updateById(account);
         return ResponseEntity.ok("SUCCESS");
     }
