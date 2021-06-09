@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -73,6 +74,10 @@ public class AccountController {
     public ResponseEntity<String> register(@RequestBody Map<String, String> map) {
         String username = map.get("username");
         String password = map.get("password");
+        String reg = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$";
+        if(!Pattern.matches(password,reg)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Password");
+        }
         String nickname = map.get("nickname");
         String[] ava = {"-1.jpg","-2.png","-3.png","-4.jpg","-5.jpg"};
         String[] background = {"-1.png","-2.jpg","-3.jpg"};
