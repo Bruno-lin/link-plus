@@ -121,6 +121,8 @@ public class AccountController {
         Account account = accounts.get(0);
         if (username.equals(account.getUsername()) && encryption.equals(account.getSecretKey())) {
             session.setAttribute("accountId", account.getId());
+            session.setAttribute("nickname",account.getNickname());
+            session.setAttribute("avatar",account.getAvatar());
             return ResponseEntity.ok("SUCCESS");
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
