@@ -15,6 +15,7 @@ import us.linkpl.linkplus.entity.response.AccountResponse;
 import us.linkpl.linkplus.entity.response.SimpleAccount;
 import us.linkpl.linkplus.mapper.AccountMapper;
 import us.linkpl.linkplus.mapper.FollowMapper;
+import us.linkpl.linkplus.service.impl.FollowServiceImpl;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -38,6 +39,8 @@ public class FollowController {
     @Autowired
     AccountMapper accountMapper;
 
+    @Autowired
+    FollowServiceImpl followService;
     /**
      * 关注
      *
@@ -53,7 +56,13 @@ public class FollowController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
+
         Long accountId = (Long) session.getAttribute("accountId");
+        QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("accountId",accountId).eq("followId",id);
+
+        List<Follow> follows = followMapper.selectList(queryWrapper);
+        if (follows.size()!=0)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already Followed");
         Follow follow = new Follow();
         follow.setAccountId(accountId.intValue());
         follow.setFollowId(id.intValue());
@@ -61,6 +70,21 @@ public class FollowController {
 
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{id}")
+    private ResponseEntity unFollowById(@PathVariable("id") Long id, HttpSession session){
+        Account account = accountMapper.selectById(id);
+        if (account == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT_FOUND");
+        }
+        Long accountId = (Long) session.getAttribute("accountId");
+        QueryWrapper<Follow> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("accountId",accountId).eq("followId",id);
+        followMapper.delete(queryWrapper);
+        return ResponseEntity.ok().body("SUCCESS");
+
+    }
+
 
     /**
      * 分页获取关注列表
