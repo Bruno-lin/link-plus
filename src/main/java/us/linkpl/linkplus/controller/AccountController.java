@@ -83,6 +83,7 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Nickname");
         }
 
+        //密码至少包含数字和英文(大小写都可以)，长度6-20
         String reg = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$";
         if (!Pattern.matches(password, reg)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Password");
