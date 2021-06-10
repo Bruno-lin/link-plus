@@ -89,12 +89,12 @@ public class SearchController {
         return ResponseEntity.ok(accountPage);
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity getAccountByName(@PathVariable("name") String nickname) {
+    @GetMapping("/name/{nickname}")
+    public ResponseEntity getAccountByName(@PathVariable("nickname") String nickname) {
         QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("nickname", nickname);
         List<Account> account = accountMapper.selectList(queryWrapper);
-        if (account == null) {
+        if (account == null || account.size() == 0) {
             return ResponseEntity.ok("Account Not Found!");
         }
         return getAccountById(account.get(0).getId());
