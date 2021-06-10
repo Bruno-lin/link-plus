@@ -56,13 +56,12 @@ public class FollowController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-
         Long accountId = (Long) session.getAttribute("accountId");
         QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("accountId",accountId).eq("followId",id);
 
         List<Follow> follows = followMapper.selectList(queryWrapper);
-        if (follows.size()!=0)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already Followed");
+        if (follows.size()!=0)return ResponseEntity.ok("Already Followed");
         Follow follow = new Follow();
         follow.setAccountId(accountId.intValue());
         follow.setFollowId(id.intValue());
