@@ -141,7 +141,6 @@ public class AccountController {
         if (username == null||password==null) {
             return ResponseEntity.ok("FAILED");
         }
-
         String encryption = DigestUtils.md5DigestAsHex(password.getBytes());
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
         queryWrapper.eq("username", username);
