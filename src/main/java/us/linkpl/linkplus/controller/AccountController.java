@@ -79,17 +79,17 @@ public class AccountController {
         if (!isAvalid("username", username)) {
             return ResponseEntity.ok("Invalid_Username");
         }
-        if (!isAvalid("nickname", nickname) || nickname.length() > 32) {
+        if (!isAvalid("nickname", nickname)) {
             return ResponseEntity.ok("Invalid_Nickname");
         }
 
         //用户名,8到20位（字母，数字，下划线，减号）
-        String nameReg = "^\\w{8,20}$";
-        if (!Pattern.matches(username, nameReg)) {
+        String nameReg= "^\\w{8,20}$";
+        if (!Pattern.matches(username,nameReg)){
             return ResponseEntity.ok("Invalid_Username");
         }
 
-        //密码以英文开头，只能包含数组字幕下划线，长度8-20
+        //密码以英文开头，只能包含数组字幕下划线，长度6-20
         String reg = "^[a-zA-Z]\\w{8,20}$";
         if (!Pattern.matches(password, reg)) {
             return ResponseEntity.ok("Invalid_Password");
