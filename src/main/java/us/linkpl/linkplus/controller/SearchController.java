@@ -3,6 +3,7 @@ package us.linkpl.linkplus.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import us.linkpl.linkplus.entity.Account;
@@ -50,9 +51,11 @@ public class SearchController {
         return getAccountPageById(id);
     }
 
-    private ResponseEntity<AccountPage> getAccountPageById(Long id) {
+    private ResponseEntity getAccountPageById(Long id) {
         Account account = accountMapper.selectById(id);
-
+        if (account == null) {
+            return ResponseEntity.ok("Account Not Found!");
+        }
         AccountInfo accountInfo = new AccountInfo();
         BeanUtils.copyProperties(account, accountInfo);
 

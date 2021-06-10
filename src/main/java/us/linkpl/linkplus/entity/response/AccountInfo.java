@@ -15,6 +15,8 @@ public class AccountInfo {
 
     private String avatar;
 
+    private String slogan;
+
     private int fans;
 
     private int follows;

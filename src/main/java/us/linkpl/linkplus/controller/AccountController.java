@@ -24,12 +24,12 @@ import us.linkpl.linkplus.service.impl.AccountSocialmediaServiceImpl;
 import us.linkpl.linkplus.service.impl.FollowServiceImpl;
 
 import javax.servlet.http.HttpSession;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -63,6 +63,7 @@ public class AccountController {
 
     @Value("${ACCOUNT}")
     private String ACCOUNT;
+
     /**
      * 注册
      *
@@ -74,8 +75,23 @@ public class AccountController {
         String username = map.get("username");
         String password = map.get("password");
         String nickname = map.get("nickname");
-        String[] ava = {"-1.jpg","-2.png","-3.png","-4.jpg","-5.jpg"};
-        String[] background = {"-1.png","-2.jpg","-3.jpg"};
+
+        if (!isAvalid("username", username)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Username");
+        }
+        if (!isAvalid("nickname", nickname)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Nickname");
+        }
+
+        //密码以英文开头，只能包含数组字幕下划线，长度6-20
+        String reg = "^[a-zA-Z]\\w{6,20}$";
+        if (!Pattern.matches(password, reg)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Password");
+        }
+
+
+        String[] ava = {"-1.jpg", "-2.png", "-3.png", "-4.jpg", "-5.jpg"};
+        String[] background = {"-1.png", "-2.jpg", "-3.jpg"};
         String AVATAR = "/accounts/avatar/";
         String BACKGROUND = "/accounts/background/";
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
@@ -87,8 +103,8 @@ public class AccountController {
         String encryption = DigestUtils.md5DigestAsHex(password.getBytes());
         Random avaRandom = new Random();
         Random bgRandom = new Random();
-        String avatar = AVATAR+ava[avaRandom.nextInt(4)];
-        String backg = BACKGROUND+background[bgRandom.nextInt(2)];
+        String avatar = AVATAR + ava[avaRandom.nextInt(4)];
+        String backg = BACKGROUND + background[bgRandom.nextInt(2)];
 
         Account account = new Account();
         account.setUsername(username);
@@ -121,8 +137,8 @@ public class AccountController {
         Account account = accounts.get(0);
         if (username.equals(account.getUsername()) && encryption.equals(account.getSecretKey())) {
             session.setAttribute("accountId", account.getId());
-            session.setAttribute("nickname",account.getNickname());
-            session.setAttribute("avatar",account.getAvatar());
+            session.setAttribute("nickname", account.getNickname());
+            session.setAttribute("avatar", account.getAvatar());
             return ResponseEntity.ok("SUCCESS");
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
@@ -176,30 +192,43 @@ public class AccountController {
 
     /**
      * 验证username是否重复
+     *
      * @param username
      * @return
      */
     @GetMapping("/username")
     public ResponseEntity<String> repeatUsername(@RequestParam("username") String username) {
-        QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
-        queryWrapper.eq("username", username);
-        List<Account> accounts = accountMapper.selectList(queryWrapper);
-        if (accounts.size() == 0) return ResponseEntity.ok("SUCCESS");
-        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
+        boolean isUnique = isAvalid("username", username);
+        if (isUnique) return ResponseEntity.ok("SUCCESS");
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Username");
     }
 
     /**
+     * 查询是否重复
+     *
+     * @param column
+     * @param username
+     * @return
+     */
+    private boolean isAvalid(String column, String username) {
+        QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(column, username);
+        List<Account> accounts = accountMapper.selectList(queryWrapper);
+        return accounts.size() == 0;
+    }
+
+
+    /**
      * 验证nickname是否重复
+     *
      * @param nickname
      * @return
      */
     @GetMapping("/nickname")
     public ResponseEntity<String> repeatNickname(@RequestParam("nickname") String nickname) {
-        QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
-        queryWrapper.eq("nickname", nickname);
-        List<Account> accounts = accountMapper.selectList(queryWrapper);
-        if (accounts.size() == 0) return ResponseEntity.ok("SUCCESS");
-        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
+        boolean isUnique = isAvalid("nickname", nickname);
+        if (isUnique) return ResponseEntity.ok("SUCCESS");
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Nickname");
     }
 
     /**
@@ -209,9 +238,9 @@ public class AccountController {
      * @return
      */
     @PutMapping("/me")
-    public ResponseEntity<String> editAccount(@RequestBody Account account,HttpSession session) {
+    public ResponseEntity<String> editAccount(@RequestBody Account account, HttpSession session) {
         Long accountId = (Long) session.getAttribute("accountId");
-        if (!accountId.equals(account.getId()))return ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
+        if (!accountId.equals(account.getId())) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
         accountMapper.updateById(account);
         return ResponseEntity.ok("SUCCESS");
     }
@@ -271,45 +300,15 @@ public class AccountController {
 
     /**
      * 上传用户头像
+     *
      * @param file
      * @param session
      * @return
      * @throws IOException
      */
     @PostMapping("/avatar")
-    public ResponseEntity postAvatar(MultipartFile file,HttpSession session) throws IOException {
-        Long accountId = /*5l; */(Long)session.getAttribute("accountId");
-       if (Objects.isNull(file) || file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
-        }
-        byte[] bytes = file.getBytes();
-        String originalFilename = file.getOriginalFilename();
-
-        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String pic = ACCOUNT + accountId +"_"+suffix;
-        String name = accountId +"_"+suffix;
-
-        Path path = Paths.get(pic);
-        if (!Files.isWritable(path)) {
-            Files.createDirectories(Paths.get(ACCOUNT));
-        }
-        Files.write(path,bytes);
-        Account account = accountMapper.selectById(accountId);
-        account.setAvatar("/accounts/avatar/"+name);
-        accountMapper.updateById(account);
-        return ResponseEntity.ok().body("SUCCESS");
-    }
-
-    /**
-     * 上传用户背景图片
-     * @param file
-     * @param session
-     * @return
-     * @throws IOException
-     */
-    @PostMapping("/background")
-    public ResponseEntity postBackground(MultipartFile file,HttpSession session) throws IOException {
-        Long accountId = /*5l; */(Long)session.getAttribute("accountId");
+    public ResponseEntity postAvatar(MultipartFile file, HttpSession session) throws IOException {
+        Long accountId = /*5l; */(Long) session.getAttribute("accountId");
         if (Objects.isNull(file) || file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
         }
@@ -317,16 +316,48 @@ public class AccountController {
         String originalFilename = file.getOriginalFilename();
 
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String pic = ACCOUNT + accountId +"_"+suffix;
-        String name = accountId +"_"+suffix;
+        String pic = ACCOUNT + accountId + "_" + suffix;
+        String name = accountId + "_" + suffix;
 
         Path path = Paths.get(pic);
         if (!Files.isWritable(path)) {
             Files.createDirectories(Paths.get(ACCOUNT));
         }
-        Files.write(path,bytes);
+        Files.write(path, bytes);
         Account account = accountMapper.selectById(accountId);
-        account.setAvatar("/accounts/background/"+name);
+        account.setAvatar("/accounts/avatar/" + name);
+        accountMapper.updateById(account);
+        return ResponseEntity.ok().body("SUCCESS");
+    }
+
+    /**
+     * 上传用户背景图片
+     *
+     * @param file
+     * @param session
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("/background")
+    public ResponseEntity postBackground(MultipartFile file, HttpSession session) throws IOException {
+        Long accountId = /*5l; */(Long) session.getAttribute("accountId");
+        if (Objects.isNull(file) || file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
+        }
+        byte[] bytes = file.getBytes();
+        String originalFilename = file.getOriginalFilename();
+
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String pic = ACCOUNT + accountId + "_" + suffix;
+        String name = accountId + "_" + suffix;
+
+        Path path = Paths.get(pic);
+        if (!Files.isWritable(path)) {
+            Files.createDirectories(Paths.get(ACCOUNT));
+        }
+        Files.write(path, bytes);
+        Account account = accountMapper.selectById(accountId);
+        account.setAvatar("/accounts/background/" + name);
         accountMapper.updateById(account);
         return ResponseEntity.ok().body("SUCCESS");
     }
