@@ -132,16 +132,16 @@ public class AccountController {
         queryWrapper.eq("username", username);
         List<Account> accounts = accountMapper.selectList(queryWrapper);
         if (accounts.size() == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.ok("FAILED");
         }
         Account account = accounts.get(0);
         if (username.equals(account.getUsername()) && encryption.equals(account.getSecretKey())) {
             session.setAttribute("accountId", account.getId());
             session.setAttribute("nickname", account.getNickname());
             session.setAttribute("avatar", account.getAvatar());
-            return ResponseEntity.ok("SUCCESS");
+            return ResponseEntity.ok("OK");
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.ok("FAILED");
         }
     }
 
@@ -158,7 +158,7 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
         }
         session.removeAttribute("accountId");
-        return ResponseEntity.ok("SUCCESS");
+        return ResponseEntity.ok("OK");
     }
 
     /**
