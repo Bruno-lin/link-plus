@@ -19,6 +19,7 @@ import us.linkpl.linkplus.mapper.FollowMapper;
 import us.linkpl.linkplus.service.impl.FollowServiceImpl;
 
 import javax.servlet.http.HttpSession;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,7 @@ public class FollowController {
         }
 
         Long accountId = Long.valueOf(cookieId);
+        System.out.println(accountId);
         QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("accountId", accountId).eq("followId", id);
 
@@ -67,7 +69,6 @@ public class FollowController {
         follow.setAccountId(accountId.intValue());
         follow.setFollowId(id.intValue());
         followMapper.insert(follow);
-
         return ResponseEntity.ok().build();
     }
 
