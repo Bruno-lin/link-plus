@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.DigestUtils;
@@ -134,7 +135,7 @@ public class AccountController {
      * @return 状态码
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> map, HttpSession session) {
+    public ResponseEntity login(@RequestBody Map<String, String> map, HttpSession session,HttpCookie cookie) {
         String username = map.get("username");
         String password = map.get("password");
         String encryption = DigestUtils.md5DigestAsHex(password.getBytes());
@@ -147,9 +148,12 @@ public class AccountController {
         Account account = accounts.get(0);
         if (username.equals(account.getUsername()) && encryption.equals(account.getSecretKey())) {
             session.setAttribute("accountId", account.getId());
-            session.setAttribute("nickname", account.getNickname());
-            session.setAttribute("avatar", account.getAvatar());
-            return ResponseEntity.ok("OK");
+
+            SimpleAccount simpleAccount = new SimpleAccount();
+            simpleAccount.setNickname(account.getNickname());
+            simpleAccount.setAvatar(account.getAvatar());
+            simpleAccount.setId(account.getId());
+            return ResponseEntity.ok(simpleAccount);
         } else {
             return ResponseEntity.ok("FAILED");
         }
