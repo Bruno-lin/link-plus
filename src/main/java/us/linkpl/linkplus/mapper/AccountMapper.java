@@ -20,6 +20,6 @@ import java.util.List;
 @Repository
 public interface AccountMapper extends BaseMapper<Account> {
 
-    @Select("SELECT * FROM account WHERE id >= ((SELECT MAX(id) FROM account)-(SELECT MIN(id) FROM account)) * RAND() + (SELECT MIN(id) FROM accounts)  LIMIT #{num}")
+    @Select("SELECT * FROM account WHERE id >= ((SELECT MAX(id) FROM account)-(SELECT MIN(id) FROM account)) * RAND() + (SELECT MIN(id) FROM account)  LIMIT #{num}")
     List<Account> selectRandomAccount(@Param("num") Integer num);
 }
