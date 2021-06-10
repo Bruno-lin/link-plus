@@ -53,6 +53,7 @@ public class FollowController {
 
         Account account = accountMapper.selectById(id);
         if (account == null) {
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account_Not_Found");
         }
 
