@@ -21,7 +21,9 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
+        response.addHeader("Access-Control-Allow-Origin", "http://localhost:8082");
+        response.addHeader("Access-Control-Allow-Credentials", String.valueOf(true));
+        response.addHeader("content-test","123");
         HttpSession session = request.getSession();
         Cookie[] cookies = request.getCookies();
         System.out.println(Arrays.toString(cookies));
@@ -46,7 +48,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,  ModelAndView modelAndView) throws Exception {
-        response.addHeader("Access-Control-Allow-Origin", "http://localhost:8082");
-        response.addHeader("Access-Control-Allow-Credentials", "true");
+
     }
 }

@@ -5,12 +5,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import us.linkpl.linkplus.interceptor.AuthInterceptor;
+import us.linkpl.linkplus.interceptor.HeaderInterceptor;
 
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
 
     @Autowired
     AuthInterceptor authInterceptor;
+
+    @Autowired
+    HeaderInterceptor headerInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -24,5 +28,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/api/search/id/**")
                 .excludePathPatterns("/api/search/name/**")
                 .excludePathPatterns("/static/**");  //过滤掉静态资源
+
+        registry.addInterceptor(headerInterceptor).addPathPatterns("/api/**");
     }
 }
