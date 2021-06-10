@@ -141,7 +141,7 @@ public class AccountController {
             session.setAttribute("avatar", account.getAvatar());
             return ResponseEntity.ok("SUCCESS");
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
