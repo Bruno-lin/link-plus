@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author samsara
@@ -20,6 +20,6 @@ import java.util.List;
 @Repository
 public interface AccountMapper extends BaseMapper<Account> {
 
-    @Select("SELECT * FROM account as u JOIN (SELECT ROUND(RAND() * (SELECT MAX(id) FROM account)) AS id ) AS u2 WHERE u.id >= u2.id ORDER BY u.id DESC LIMIT #{num}")
+    @Select("SELECT * FROM users WHERE userId >= ((SELECT MAX(userId) FROM users)-(SELECT MIN(userId) FROM users)) * RAND() + (SELECT MIN(userId) FROM users)  LIMIT #{num}")
     List<Account> selectRandomAccount(@Param("num") Integer num);
 }
