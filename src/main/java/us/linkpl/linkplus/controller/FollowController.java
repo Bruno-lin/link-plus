@@ -19,6 +19,7 @@ import us.linkpl.linkplus.mapper.FollowMapper;
 import us.linkpl.linkplus.service.impl.FollowServiceImpl;
 
 import javax.servlet.http.HttpSession;
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +69,6 @@ public class FollowController {
         follow.setAccountId(accountId.intValue());
         follow.setFollowId(id.intValue());
         followMapper.insert(follow);
-
         return ResponseEntity.ok().build();
     }
 

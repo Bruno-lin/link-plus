@@ -10,6 +10,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
 
 @Configuration
 public class AuthInterceptor implements HandlerInterceptor {
@@ -19,8 +20,13 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+
+        response.addHeader("Access-Control-Allow-Origin","http://localhost:8080");
+        response.addHeader("Access-Control-Allow-Credentials","true");
+
         HttpSession session = request.getSession();
         Cookie[] cookies = request.getCookies();
+        System.out.println(Arrays.toString(cookies));
         if (cookies != null) {
             String key1 = "1";
             String key2 = "2";
