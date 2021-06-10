@@ -135,7 +135,7 @@ public class AccountController {
      * @return 状态码
      */
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody Map<String, String> map, HttpSession session,HttpCookie cookie) {
+    public ResponseEntity login(@RequestBody Map<String, String> map, HttpSession session) {
         String username = map.get("username");
         String password = map.get("password");
         String encryption = DigestUtils.md5DigestAsHex(password.getBytes());
@@ -148,7 +148,6 @@ public class AccountController {
         Account account = accounts.get(0);
         if (username.equals(account.getUsername()) && encryption.equals(account.getSecretKey())) {
             session.setAttribute("accountId", account.getId());
-
             SimpleAccount simpleAccount = new SimpleAccount();
             simpleAccount.setNickname(account.getNickname());
             simpleAccount.setAvatar(account.getAvatar());
