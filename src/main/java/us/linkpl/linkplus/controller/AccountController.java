@@ -76,6 +76,10 @@ public class AccountController {
         String password = map.get("password");
         String nickname = map.get("nickname");
 
+        if(username==null||password==null||nickname==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         if (!isAvalid("username", username)) {
             return ResponseEntity.ok("Invalid_Username");
         }
