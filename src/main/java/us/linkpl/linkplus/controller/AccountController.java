@@ -24,8 +24,11 @@ import us.linkpl.linkplus.mapper.SocialMediaMapper;
 import us.linkpl.linkplus.service.impl.AccountSocialmediaServiceImpl;
 import us.linkpl.linkplus.service.impl.FollowServiceImpl;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -135,7 +138,7 @@ public class AccountController {
      * @return 状态码
      */
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody Map<String, String> map, HttpSession session) {
+    public ResponseEntity login(@RequestBody Map<String, String> map, HttpServletResponse response, HttpSession session) {
         String username = map.get("username");
         String password = map.get("password");
         if (username == null||password==null) {
@@ -150,13 +153,18 @@ public class AccountController {
         }
         Account account = accounts.get(0);
         if (username.equals(account.getUsername()) && encryption.equals(account.getSecretKey())) {
-            session.setAttribute("accountId", account.getId());
+            String key = String.valueOf(System.currentTimeMillis());
+            session.setAttribute(String.valueOf(account.getId()),key );
 
-            SimpleAccount simpleAccount = new SimpleAccount();
-            simpleAccount.setNickname(account.getNickname());
-            simpleAccount.setAvatar(account.getAvatar());
-            simpleAccount.setId(account.getId());
-            return ResponseEntity.ok(simpleAccount);
+            Cookie cookie1 = new Cookie("id",String.valueOf(account.getId()));
+            Cookie cookie2 = new Cookie("nickname",account.getNickname());
+            Cookie cookie3 = new Cookie("avatar",account.getAvatar());
+            Cookie cookie4 = new Cookie("secretKey",key);
+            response.addCookie(cookie1);
+            response.addCookie(cookie2);
+            response.addCookie(cookie3);
+            response.addCookie(cookie4);
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.ok("FAILED");
         }
@@ -165,16 +173,11 @@ public class AccountController {
     /**
      * 注销
      *
-     * @param session session
      * @return 状态码
      */
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        Long accountId = (Long) session.getAttribute("accountId");
-        if (accountId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
-        }
-        session.removeAttribute("accountId");
+    public ResponseEntity<String> logout(HttpSession session,@CookieValue("id") String id ) {
+        session.removeAttribute(id);
         return ResponseEntity.ok("OK");
     }
 
@@ -185,10 +188,14 @@ public class AccountController {
      * @return 状态码
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<String> delete(@PathVariable("id") Long id,@CookieValue("id") String cookieId) {
         if (id == null) { //id为空
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+        if (!String.valueOf(id).equals(cookieId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
+        }
+
         Account account = accountMapper.selectById(id);
         if (account == null) { //要删除的账户不存在
             return ResponseEntity.ok("ACCOUNT_NOT_FOUND");
@@ -255,9 +262,10 @@ public class AccountController {
      * @return
      */
     @PutMapping("/me")
-    public ResponseEntity<String> editAccount(@RequestBody Account account, HttpSession session) {
-        Long accountId = (Long) session.getAttribute("accountId");
-        if (!accountId.equals(account.getId())) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
+    public ResponseEntity<String> editAccount(@RequestBody Account account, @CookieValue("id") String id) {
+        if(!String.valueOf(account.getId()).equals(id)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
+        }
         accountMapper.updateById(account);
         return ResponseEntity.ok("OK");
     }
@@ -319,13 +327,12 @@ public class AccountController {
      * 上传用户头像
      *
      * @param file
-     * @param session
      * @return
      * @throws IOException
      */
     @PostMapping("/avatar")
-    public ResponseEntity postAvatar(MultipartFile file, HttpSession session) throws IOException {
-        Long accountId = /*5l; */(Long) session.getAttribute("accountId");
+    public ResponseEntity postAvatar(MultipartFile file, @CookieValue("id") String id) throws IOException {
+        Long accountId = Long.valueOf(id);
         if (Objects.isNull(file) || file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
         }
@@ -351,13 +358,12 @@ public class AccountController {
      * 上传用户背景图片
      *
      * @param file
-     * @param session
      * @return
      * @throws IOException
      */
     @PostMapping("/background")
-    public ResponseEntity postBackground(MultipartFile file, HttpSession session) throws IOException {
-        Long accountId = /*5l; */(Long) session.getAttribute("accountId");
+    public ResponseEntity postBackground(MultipartFile file, @CookieValue("id") String id) throws IOException {
+        Long accountId = Long.valueOf(id);
         if (Objects.isNull(file) || file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
         }

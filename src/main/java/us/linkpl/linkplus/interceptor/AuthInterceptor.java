@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpCookie;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,19 +19,24 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-//        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-//        String id = operations.get("userId");
         HttpSession session = request.getSession();
-        Object id = session.getAttribute("accountId");
-        if (id == null) {
-//            System.out.println("401:"+request.getServletPath());
-//            session.setAttribute("userId",0);
-            response.setStatus(401);
-            return false;
-//            return true;
-        } else {
-//            session.setAttribute("userId", Integer.valueOf(id));
-            return true;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            String key1 = "1";
+            String key2 = "2";
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("id")) {
+                    key1 = (String) session.getAttribute(cookie.getValue());
+                }
+                if (cookie.getName().equals("key")) {
+                    key2 = cookie.getValue();
+                }
+            }
+            if (key1.equals(key2)) {
+                return true;
+            }
         }
+        response.setStatus(401);
+        return false;
     }
 }

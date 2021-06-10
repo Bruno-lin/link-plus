@@ -15,7 +15,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/1/api/**")
+                .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/account/login")  //过滤掉登录页面
                 .excludePathPatterns("/api/account/register")  //过滤掉注册页面
                 .excludePathPatterns("/api/account/username")
