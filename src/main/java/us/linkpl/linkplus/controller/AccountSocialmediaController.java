@@ -35,17 +35,16 @@ public class AccountSocialmediaController {
     /**
      * 修改社交媒体
      *
-     * @param session
      * @param media
      * @return
      */
     @PostMapping("")
-    public ResponseEntity<String> editAccountSocialMedia(HttpSession session, @RequestBody Media media) {
+    public ResponseEntity<String> editAccountSocialMedia(@CookieValue("id") String id, @RequestBody Media media) {
         if (media == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         AccountSocialmedia a = new AccountSocialmedia();
-        Integer accountId = (Integer) session.getAttribute("userId");
+        Integer accountId = Integer.valueOf(id);
         AccountSocialmedia accountSocialmedia = accountSocialmediaMapper.selectById(media.getId());
         if (accountSocialmedia.getAccountId() != accountId) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -59,17 +58,16 @@ public class AccountSocialmediaController {
     /**
      * 添加社交媒体
      *
-     * @param session
      * @param media
      * @return
      */
     @PutMapping("")
-    public ResponseEntity<String> addAccountSocialMedia(HttpSession session, @RequestBody Media media) {
+    public ResponseEntity<String> addAccountSocialMedia(@CookieValue("id") String id, @RequestBody Media media) {
         if (media == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         AccountSocialmedia a = new AccountSocialmedia();
-        Integer accountId = (Integer) session.getAttribute("userId");
+        Integer accountId = Integer.valueOf(id);
         a.setAccountId(accountId);
         a.setSocialMediaId(Math.toIntExact(media.getMediaId()));
         a.setContent(media.getContent());
