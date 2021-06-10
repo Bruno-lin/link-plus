@@ -138,6 +138,10 @@ public class AccountController {
     public ResponseEntity login(@RequestBody Map<String, String> map, HttpSession session) {
         String username = map.get("username");
         String password = map.get("password");
+        if (username == null||password==null) {
+            return ResponseEntity.ok("FAILED");
+        }
+
         String encryption = DigestUtils.md5DigestAsHex(password.getBytes());
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
         queryWrapper.eq("username", username);
