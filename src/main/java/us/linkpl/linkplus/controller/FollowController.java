@@ -58,6 +58,7 @@ public class FollowController {
         }
 
         Long accountId = Long.valueOf(cookieId);
+        System.out.println(accountId);
         QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("accountId", accountId).eq("followId", id);
 

@@ -80,7 +80,7 @@ public class AccountController {
         String password = map.get("password");
         String nickname = map.get("nickname");
 
-        if(username==null||password==null||nickname==null){
+        if (username == null || password == null || nickname == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
@@ -141,7 +141,7 @@ public class AccountController {
     public ResponseEntity login(@RequestBody Map<String, String> map, HttpServletResponse response, HttpSession session) {
         String username = map.get("username");
         String password = map.get("password");
-        if (username == null||password==null) {
+        if (username == null || password == null) {
             return ResponseEntity.ok("FAILED");
         }
         String encryption = DigestUtils.md5DigestAsHex(password.getBytes());
@@ -153,18 +153,15 @@ public class AccountController {
         }
         Account account = accounts.get(0);
         if (username.equals(account.getUsername()) && encryption.equals(account.getSecretKey())) {
-            String key = String.valueOf(System.currentTimeMillis());
-            session.setAttribute(String.valueOf(account.getId()),key );
+            String token = String.valueOf(System.currentTimeMillis());
+            session.setAttribute(String.valueOf(account.getId()), token);
 
-            Cookie cookie1 = new Cookie("id",String.valueOf(account.getId()));
-            Cookie cookie2 = new Cookie("nickname",account.getNickname());
-            Cookie cookie3 = new Cookie("avatar",account.getAvatar());
-            Cookie cookie4 = new Cookie("secretKey",key);
-            response.addCookie(cookie1);
-            response.addCookie(cookie2);
-            response.addCookie(cookie3);
-            response.addCookie(cookie4);
-            return ResponseEntity.ok().build();
+            MyCookie myCookie = new MyCookie();
+            myCookie.setId(account.getId());
+            myCookie.setAvatar(account.getAvatar());
+            myCookie.setNickname(account.getNickname());
+            myCookie.setToken(token);
+            return ResponseEntity.ok(myCookie);
         } else {
             return ResponseEntity.ok("FAILED");
         }
@@ -176,7 +173,7 @@ public class AccountController {
      * @return 状态码
      */
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session,@CookieValue("id") String id ) {
+    public ResponseEntity<String> logout(HttpSession session, @CookieValue("id") String id) {
         session.removeAttribute(id);
         return ResponseEntity.ok("OK");
     }
@@ -188,7 +185,7 @@ public class AccountController {
      * @return 状态码
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id,@CookieValue("id") String cookieId) {
+    public ResponseEntity<String> delete(@PathVariable("id") Long id, @CookieValue("id") String cookieId) {
         if (id == null) { //id为空
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -263,7 +260,7 @@ public class AccountController {
      */
     @PutMapping("/me")
     public ResponseEntity<String> editAccount(@RequestBody Account account, @CookieValue("id") String id) {
-        if(!String.valueOf(account.getId()).equals(id)){
+        if (!String.valueOf(account.getId()).equals(id)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
         }
         accountMapper.updateById(account);
