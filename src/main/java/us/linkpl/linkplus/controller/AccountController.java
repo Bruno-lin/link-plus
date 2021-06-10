@@ -77,16 +77,16 @@ public class AccountController {
         String nickname = map.get("nickname");
 
         if (!isAvalid("username", username)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Username");
+            return ResponseEntity.ok("Invalid_Username");
         }
         if (!isAvalid("nickname", nickname)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Nickname");
+            return ResponseEntity.ok("Invalid_Nickname");
         }
 
         //密码以英文开头，只能包含数组字幕下划线，长度6-20
         String reg = "^[a-zA-Z]\\w{6,20}$";
         if (!Pattern.matches(password, reg)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Password");
+            return ResponseEntity.ok("Invalid_Password");
         }
 
 
@@ -113,7 +113,7 @@ public class AccountController {
         account.setAvatar(avatar);
         account.setBackground(backg);
         accountMapper.insert(account);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("OK");
     }
 
     /**
@@ -170,11 +170,11 @@ public class AccountController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         if (id == null) { //id为空
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD_REQUEST");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
         Account account = accountMapper.selectById(id);
         if (account == null) { //要删除的账户不存在
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT_FOUND");
+            return ResponseEntity.ok("ACCOUNT_NOT_FOUND");
         }
         //session.removeAttribute("accountId");  //退出登录
         accountMapper.deleteById(id);  //删除账户
@@ -187,7 +187,7 @@ public class AccountController {
         queryWrapper1.eq("accountId", id).or().eq("followId", id);
         followMapper.delete(queryWrapper1);
 
-        return ResponseEntity.status(HttpStatus.OK).body("SUCCESS");
+        return ResponseEntity.ok("OK");
     }
 
     /**
@@ -199,8 +199,8 @@ public class AccountController {
     @GetMapping("/username")
     public ResponseEntity<String> repeatUsername(@RequestParam("username") String username) {
         boolean isUnique = isAvalid("username", username);
-        if (isUnique) return ResponseEntity.ok("SUCCESS");
-        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Username");
+        if (isUnique) return ResponseEntity.ok("OK");
+        else return ResponseEntity.ok("Invalid_Username");
     }
 
     /**
@@ -227,7 +227,7 @@ public class AccountController {
     @GetMapping("/nickname")
     public ResponseEntity<String> repeatNickname(@RequestParam("nickname") String nickname) {
         boolean isUnique = isAvalid("nickname", nickname);
-        if (isUnique) return ResponseEntity.ok("SUCCESS");
+        if (isUnique) return ResponseEntity.ok("OK");
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid_Nickname");
     }
 
@@ -242,7 +242,7 @@ public class AccountController {
         Long accountId = (Long) session.getAttribute("accountId");
         if (!accountId.equals(account.getId())) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("FORBIDDEN");
         accountMapper.updateById(account);
-        return ResponseEntity.ok("SUCCESS");
+        return ResponseEntity.ok("OK");
     }
 
 
@@ -327,7 +327,7 @@ public class AccountController {
         Account account = accountMapper.selectById(accountId);
         account.setAvatar("/accounts/avatar/" + name);
         accountMapper.updateById(account);
-        return ResponseEntity.ok().body("SUCCESS");
+        return ResponseEntity.ok().body("OK");
     }
 
     /**
@@ -359,6 +359,6 @@ public class AccountController {
         Account account = accountMapper.selectById(accountId);
         account.setAvatar("/accounts/background/" + name);
         accountMapper.updateById(account);
-        return ResponseEntity.ok().body("SUCCESS");
+        return ResponseEntity.ok().body("OK");
     }
 }
