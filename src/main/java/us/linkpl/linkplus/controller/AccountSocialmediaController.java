@@ -67,6 +67,9 @@ public class AccountSocialmediaController {
         }
 
         for (Media media : medias) {
+            if(media.getMediaId()==null||media.getContent()==null){
+                continue;
+            }
             //添加
             if (media.getId() == null) {
                 AccountSocialmedia a = new AccountSocialmedia();
