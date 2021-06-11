@@ -106,7 +106,7 @@ public class AccountController {
 
 
         String[] ava = {"-1.png", "-2.png", "-3.png", "-4.png", "-5.png"};
-        String[] background = {"-1.png", "-2.jpg", "-3.jpg"};
+        String[] background = {"-1.png", "-2.png", "-3.png"};
         String AVATAR = "/accounts/avatar/";
         String BACKGROUND = "/accounts/background/";
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
