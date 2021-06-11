@@ -4,6 +4,7 @@ package us.linkpl.linkplus.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpCookie;
@@ -93,18 +94,18 @@ public class AccountController {
 
         //用户名,8到20位（字母，数字，下划线，减号）
         String nameReg = "^\\w{8,20}$";
-        if (!Pattern.matches(username, nameReg)) {
+        if (!Pattern.matches(nameReg, username)) {
             return ResponseEntity.ok("Invalid_Username");
         }
 
         //密码以英文开头，只能包含数组字幕下划线，长度6-20
         String reg = "^[a-zA-Z]\\w{8,20}$";
-        if (!Pattern.matches(password, reg)) {
+        if (!Pattern.matches( reg, password)) {
             return ResponseEntity.ok("Invalid_Password");
         }
 
 
-        String[] ava = {"-1.jpg", "-2.png", "-3.png", "-4.jpg", "-5.jpg"};
+        String[] ava = {"-1.png", "-2.png", "-3.png", "-4.png", "-5.png"};
         String[] background = {"-1.png", "-2.jpg", "-3.jpg"};
         String AVATAR = "/accounts/avatar/";
         String BACKGROUND = "/accounts/background/";
@@ -259,12 +260,14 @@ public class AccountController {
      * @return
      */
     @PutMapping("/me")
-    public ResponseEntity<String> editAccount(@RequestBody Account account, @CookieValue("id") String id) {
+    public ResponseEntity<Slogan> editAccount(@RequestBody Account account, @CookieValue("id") String id) {
         if (!String.valueOf(account.getId()).equals(id)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("UNAUTHORIZED");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        Slogan slogan = new Slogan();
         accountMapper.updateById(account);
-        return ResponseEntity.ok("OK");
+        BeanUtils.copyProperties(account,slogan);
+        return ResponseEntity.status(HttpStatus.OK).body(slogan);
     }
 
 
