@@ -2,7 +2,6 @@ package us.linkpl.linkplus.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +11,6 @@ import us.linkpl.linkplus.entity.AccountSocialmedia;
 import us.linkpl.linkplus.entity.response.Media;
 import us.linkpl.linkplus.mapper.AccountMapper;
 import us.linkpl.linkplus.mapper.AccountSocialmediaMapper;
-
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
