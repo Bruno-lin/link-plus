@@ -137,7 +137,7 @@ public class AccountController {
      */
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody Map<String, String> map, HttpServletResponse response, HttpSession session) {
-        System.out.println(Consts.FILE_ROOT);
+
         String username = map.get("username");
         String password = map.get("password");
         if (username == null || password == null) {

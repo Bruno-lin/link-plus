@@ -6,12 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpCookie;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import us.linkpl.linkplus.commom.Consts;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
 
 @Configuration
 public class AuthInterceptor implements HandlerInterceptor {
@@ -21,6 +21,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        System.out.println(Consts.FILE_ROOT);
         HttpSession session = request.getSession();
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
