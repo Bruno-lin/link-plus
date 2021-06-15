@@ -11,15 +11,6 @@ import us.linkpl.linkplus.commom.Consts;
 @Configuration
 public class PicConfig implements WebMvcConfigurer {
 
-
-    @Bean
-    public CommonsMultipartResolver multipartResolver() {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSize(600000000);
-        resolver.setDefaultEncoding("UTF-8");
-        return resolver;
-    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/res/**")
