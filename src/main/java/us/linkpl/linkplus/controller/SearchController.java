@@ -49,7 +49,6 @@ public class SearchController {
      */
     @GetMapping("/id/{id}")
     public ResponseEntity<AccountPage> getAccountById(@PathVariable("id") Long id) {
-        System.out.println(Consts.FILE_ROOT);
         return getAccountPageById(id);
     }
 
