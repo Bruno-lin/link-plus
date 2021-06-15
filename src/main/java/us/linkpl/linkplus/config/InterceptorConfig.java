@@ -29,6 +29,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/api/search/name/**")
                 .excludePathPatterns("/static/**");  //过滤掉静态资源
 
-        registry.addInterceptor(headerInterceptor).addPathPatterns("/api/**");
+//        registry.addInterceptor(headerInterceptor).addPathPatterns("/api/**");
     }
 }
