@@ -13,7 +13,7 @@ public class PicConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/res/**")
+        registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
                 .addResourceLocations("file:" + Consts.FILE_ROOT+"/images/");
     }
