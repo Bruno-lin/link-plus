@@ -338,7 +338,7 @@ public class AccountController {
         String originalFilename = file.getOriginalFilename();
 
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String pic = Consts.FILE_ROOT+"/images/" + accountId + "_" + suffix;
+        String pic = Consts.FILE_ROOT+"/images/accounts/avatar/" + accountId + "_" + suffix;
         String name = accountId + "_" + suffix;
 
         Path path = Paths.get(pic);
@@ -369,7 +369,7 @@ public class AccountController {
         String originalFilename = file.getOriginalFilename();
 
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String pic = Consts.FILE_ROOT+"/images/" + accountId + "_" + suffix;
+        String pic = Consts.FILE_ROOT+"/images/accounts/background" + accountId + "_" + suffix;
         String name = accountId + "_" + suffix;
 
         Path path = Paths.get(pic);
