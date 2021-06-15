@@ -6,14 +6,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.multipart.MultipartFile;
+import us.linkpl.linkplus.commom.Consts;
 import us.linkpl.linkplus.entity.Account;
 import us.linkpl.linkplus.entity.AccountSocialmedia;
 import us.linkpl.linkplus.entity.Follow;
@@ -25,11 +24,9 @@ import us.linkpl.linkplus.mapper.SocialMediaMapper;
 import us.linkpl.linkplus.service.impl.AccountSocialmediaServiceImpl;
 import us.linkpl.linkplus.service.impl.FollowServiceImpl;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -66,9 +63,6 @@ public class AccountController {
     @Autowired
     FollowMapper followMapper;
 
-    @Value("${ACCOUNT}")
-    private String ACCOUNT;
-
     /**
      * 注册
      *
@@ -100,15 +94,18 @@ public class AccountController {
 
         //密码以英文开头，只能包含数组字幕下划线，长度6-20
         String reg = "^[a-zA-Z]\\w{8,20}$";
-        if (!Pattern.matches( reg, password)) {
+        if (!Pattern.matches(reg, password)) {
             return ResponseEntity.ok("Invalid_Password");
         }
 
 
-        String[] ava = {"-1.png", "1.png", "-3.png", "-4.png", "-4.png"};
+        String[] ava = {"0.png", "1.png", "2.png", "3.png", "4.png"};
         String[] background = {"0.png", "1.png", "2.png"};
-        String AVATAR = "/accounts/avatar/";
-        String BACKGROUND = "/accounts/background/";
+
+
+        String AVATAR = "/linkplus/avatar/";
+        String BACKGROUND = "/linkplus/background/";
+
         QueryWrapper<Account> queryWrapper = new QueryWrapper<Account>();
         queryWrapper.eq("username", username).or().eq("nickname", nickname);
         List<Account> accounts = accountMapper.selectList(queryWrapper);
@@ -266,7 +263,7 @@ public class AccountController {
         }
         Slogan slogan = new Slogan();
         accountMapper.updateById(account);
-        BeanUtils.copyProperties(account,slogan);
+        BeanUtils.copyProperties(account, slogan);
         return ResponseEntity.status(HttpStatus.OK).body(slogan);
     }
 
@@ -340,12 +337,12 @@ public class AccountController {
         String originalFilename = file.getOriginalFilename();
 
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String pic = ACCOUNT + accountId + "_" + suffix;
+        String pic = Consts.FILE_ROOT+"/images/" + accountId + "_" + suffix;
         String name = accountId + "_" + suffix;
 
         Path path = Paths.get(pic);
         if (!Files.isWritable(path)) {
-            Files.createDirectories(Paths.get(ACCOUNT));
+            Files.createDirectories(Paths.get(Consts.FILE_ROOT+"/images/"));
         }
         Files.write(path, bytes);
         Account account = accountMapper.selectById(accountId);
@@ -371,12 +368,12 @@ public class AccountController {
         String originalFilename = file.getOriginalFilename();
 
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String pic = ACCOUNT + accountId + "_" + suffix;
+        String pic = Consts.FILE_ROOT+"/images/" + accountId + "_" + suffix;
         String name = accountId + "_" + suffix;
 
         Path path = Paths.get(pic);
         if (!Files.isWritable(path)) {
-            Files.createDirectories(Paths.get(ACCOUNT));
+            Files.createDirectories(Paths.get(Consts.FILE_ROOT+"/images/"));
         }
         Files.write(path, bytes);
         Account account = accountMapper.selectById(accountId);

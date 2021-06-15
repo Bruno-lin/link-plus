@@ -78,6 +78,7 @@ public class SearchController {
             SocialMedia socialMedia = socialMediaMapper.selectById(socialMediaId);
             media.setId(a.getId());
             media.setContent(a.getContent());
+            media.setMediaId(socialMedia.getId());
             media.setMediaName(socialMedia.getName());
             media.setLogoUrl(socialMedia.getLogoUrl());
             medias.add(media);
