@@ -11,6 +11,10 @@ import us.linkpl.linkplus.commom.Consts;
 @Configuration
 public class PicConfig implements WebMvcConfigurer {
 
+    /**
+     * 通过/images/访问图片资源
+     * @param registry
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")

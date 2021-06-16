@@ -43,7 +43,7 @@ public class SearchController {
     FollowMapper followMapper;
 
     /**
-     * 查询用户信息
+     * 根据Id查询用户信息
      *
      * @return
      */
@@ -91,6 +91,11 @@ public class SearchController {
         return ResponseEntity.ok(accountPage);
     }
 
+    /**
+     * 根据nickname查询用户信息
+     * @param nickname
+     * @return
+     */
     @GetMapping("/name/{nickname}")
     public ResponseEntity getAccountByName(@PathVariable("nickname") String nickname) {
         QueryWrapper<Account> queryWrapper = new QueryWrapper<>();

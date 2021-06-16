@@ -1,9 +1,6 @@
 package us.linkpl.linkplus.interceptor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-
-import org.springframework.http.HttpCookie;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import us.linkpl.linkplus.commom.Consts;
@@ -16,8 +13,6 @@ import javax.servlet.http.HttpSession;
 @Configuration
 public class AuthInterceptor implements HandlerInterceptor {
 
-/*    @Autowired
-    StringRedisTemplate stringRedisTemplate;*/
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -30,7 +25,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("id")) {
                     key1 = (String) session.getAttribute(cookie.getValue());
-                    if(key1==null){
+                    if (key1 == null) {
                         return false;
                     }
                 }

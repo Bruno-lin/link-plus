@@ -18,7 +18,7 @@ public class HeaderInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:8081");
+//        response.setHeader("Access-Control-Allow-Origin", "/");
         response.addHeader("Access-Control-Allow-Credentials", String.valueOf(true));
         return true;
 

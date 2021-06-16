@@ -20,9 +20,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/account/login")  //过滤掉登录页面
-                .excludePathPatterns("/api/account/register")  //过滤掉注册页面
-                .excludePathPatterns("/api/account/username")
+                .excludePathPatterns("/api/account/login")  //过滤掉登录api
+                .excludePathPatterns("/api/account/register")  //过滤掉注册api
+                .excludePathPatterns("/api/account/username")   //过滤掉查询api
                 .excludePathPatterns("/api/account/nickname")
                 .excludePathPatterns("/api/account/show")
                 .excludePathPatterns("/api/search/id/**")

@@ -322,7 +322,7 @@ public class AccountController {
     }
 
     /**
-     * 上传用户头像
+     * 上传用户头像，路径为与项目文件同级的images文件夹
      *
      * @param file
      * @return
@@ -353,7 +353,7 @@ public class AccountController {
     }
 
     /**
-     * 上传用户背景图片
+     * 上传用户背景图片，路径为与项目文件同级的images文件夹
      *
      * @param file
      * @return
