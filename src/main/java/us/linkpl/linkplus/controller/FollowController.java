@@ -41,45 +41,50 @@ public class FollowController {
 
     @Autowired
     FollowServiceImpl followService;
+
     /**
      * 关注
      *
      * @param id      关注的id
-     * @param session
      * @return
      */
     @PostMapping("/{id}")
-    public ResponseEntity<String> followById(@PathVariable("id") Long id, HttpSession session) {
+    public ResponseEntity<String> followById(@PathVariable("id") Long id, @CookieValue("id") String cookieId) {
 
         Account account = accountMapper.selectById(id);
         if (account == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account_Not_Found");
         }
 
-
-        Long accountId = (Long) session.getAttribute("accountId");
+        Long accountId = Long.valueOf(cookieId);
+        System.out.println(accountId);
         QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("accountId",accountId).eq("followId",id);
+        queryWrapper.eq("accountId", accountId).eq("followId", id);
 
         List<Follow> follows = followMapper.selectList(queryWrapper);
-        if (follows.size()!=0)return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already Followed");
+        if (follows.size() != 0) return ResponseEntity.ok("Already Followed");
         Follow follow = new Follow();
         follow.setAccountId(accountId.intValue());
         follow.setFollowId(id.intValue());
         followMapper.insert(follow);
-
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 取关
+     * @param id
+     * @param cookieId
+     * @return
+     */
     @DeleteMapping("/{id}")
-    private ResponseEntity unFollowById(@PathVariable("id") Long id, HttpSession session){
+    private ResponseEntity unFollowById(@PathVariable("id") Long id,@CookieValue("id") String cookieId) {
         Account account = accountMapper.selectById(id);
         if (account == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT_FOUND");
         }
-        Long accountId = (Long) session.getAttribute("accountId");
+        Long accountId = Long.valueOf(cookieId);
         QueryWrapper<Follow> queryWrapper = new QueryWrapper();
-        queryWrapper.eq("accountId",accountId).eq("followId",id);
+        queryWrapper.eq("accountId", accountId).eq("followId", id);
         followMapper.delete(queryWrapper);
         return ResponseEntity.ok().body("SUCCESS");
 
@@ -100,7 +105,7 @@ public class FollowController {
         }
 
         int pageSize = Integer.parseInt(params.get("pageSize"));
-        int pageNum =  Integer.parseInt(params.get("pageNum"));
+        int pageNum = Integer.parseInt(params.get("pageNum"));
         Long accountId = (Long) session.getAttribute("accountId");
 
         QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
