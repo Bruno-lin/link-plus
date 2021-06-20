@@ -95,18 +95,18 @@ public class FollowController {
      * 分页获取关注列表
      *
      * @param params
-     * @param session
+     * @param
      * @return
      */
     @GetMapping("")
-    public ResponseEntity<AccountResponse> followList(@RequestParam Map<String, String> params, HttpSession session) {
+    public ResponseEntity<AccountResponse> followList(@RequestParam Map<String, String> params, @CookieValue("id") String cookieId) {
         if (params.get("pageSize") == null || params.get("pageNum") == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         int pageSize = Integer.parseInt(params.get("pageSize"));
         int pageNum = Integer.parseInt(params.get("pageNum"));
-        Long accountId = (Long) session.getAttribute("accountId");
+        Long accountId = Long.valueOf(cookieId);
 
         QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("accountId", accountId);
