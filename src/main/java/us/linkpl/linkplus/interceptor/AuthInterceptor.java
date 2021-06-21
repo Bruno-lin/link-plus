@@ -16,7 +16,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        System.out.println(Consts.FILE_ROOT);
         HttpSession session = request.getSession();
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -29,7 +28,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                         return false;
                     }
                 }
-                if (cookie.getName().equals("key")) {
+                if (cookie.getName().equals("token")) {
                     key2 = cookie.getValue();
                 }
             }
