@@ -347,7 +347,7 @@ public class AccountController {
         }
         Files.write(path, bytes);
         Account account = accountMapper.selectById(accountId);
-        account.setAvatar("/accounts/avatar/" + name);
+        account.setAvatar("/images/accounts/avatar/" + name);
         accountMapper.updateById(account);
         return ResponseEntity.ok().body("OK");
     }
@@ -378,7 +378,7 @@ public class AccountController {
         }
         Files.write(path, bytes);
         Account account = accountMapper.selectById(accountId);
-        account.setAvatar("/accounts/background/" + name);
+        account.setAvatar("/images/accounts/background/" + name);
         accountMapper.updateById(account);
         return ResponseEntity.ok().body("OK");
     }
