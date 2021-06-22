@@ -347,7 +347,7 @@ public class AccountController {
         }
         Files.write(path, bytes);
         Account account = accountMapper.selectById(accountId);
-        account.setAvatar("/images/accounts/avatar/" + name);
+        account.setAvatar("/accounts/avatar/" + name);
         accountMapper.updateById(account);
         return ResponseEntity.ok().body("OK");
     }
@@ -369,7 +369,7 @@ public class AccountController {
         String originalFilename = file.getOriginalFilename();
 
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String pic = Consts.FILE_ROOT+"/images/accounts/background/" + accountId + "_" + suffix;
+        String pic = Consts.FILE_ROOT+"/accounts/background/" + accountId + "_" + suffix;
         String name = accountId + "_" + suffix;
 
         Path path = Paths.get(pic);
@@ -378,7 +378,7 @@ public class AccountController {
         }
         Files.write(path, bytes);
         Account account = accountMapper.selectById(accountId);
-        account.setAvatar("/images/accounts/background/" + name);
+        account.setAvatar("/accounts/background/" + name);
         accountMapper.updateById(account);
         return ResponseEntity.ok().body("OK");
     }
